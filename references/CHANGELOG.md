@@ -1,6 +1,19 @@
 ﻿# financial-xray（财报显微镜）技能迭代日志
 
 
+## 2026-09-05 v2.1.0 bundle 数据契约 + claim 四级分级（海龙群 Skill 借鉴落地）
+
+**触发**：Patrick 让我评估海龙群两个 Skill（dimanman-caiwufenxi + 嫁衣_pkg）的借鉴点。核心发现 dimanman 的"可追溯性工程化"领先——先生成 analysis_bundle.json 再生成 HTML，用脚本硬校验，而非依赖文字纪律。
+
+**v2.1.0 变更（落地 P0 + P1）**：
+- **新增"分析包数据契约"章节**：report 先生成 analysis_bundle.json（disclosures/metrics/calculations/claims/issues/scenarios/actions/quality），HTML 只是展示层；claim 必须绑定证据链；指标口径显式化；披露不足三级优雅降级
+- **纪律 16 升级为 claim 四级分级**：disclosed_fact / calculation / supported_inference / hypothesis（+ 措辞强度约束）；hypothesis 禁止进核心判断/摘要
+- **摘要增加"两条边界 + 一个反证指标"**：呼应"决策闭环"哲学，让读者带走可证伪的判断而非信息陈列
+
+**借鉴来源**：dimanman-caiwufenxi（迪慢慢财报分析 v3.0，海龙群）——bundle 契约 + claim 分级 + 3判断2边界1反证哲学；嫁衣_pkg 的指标口径词汇库思路。
+
+
+
 ## 2026-09-05 v2.0.1 分析对象分类 + 排版规范（Patrick 反馈）
 
 **触发**：Patrick 用江波龙招股书测试 skill，发现两类分析对象混用问题：
