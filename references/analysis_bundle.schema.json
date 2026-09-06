@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/financial-xray/2.1.2/analysis_bundle.schema.json",
+  "title": "financial-xray analysis bundle 2.1.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run", "disclosures", "metrics", "calculations", "claims", "issues", "scenarios", "actions", "quality"],
+  "properties": {
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["company_name", "mode", "disclosure_regime", "accounting_basis", "report_cutoff_date", "main_analysis_period", "skill_version"],
+      "properties": {
+        "company_name": {"type": "string", "minLength": 1},
+        "mode": {"enum": ["prospectus", "financial_report"]},
+        "disclosure_regime": {"type": "string", "minLength": 1},
+        "accounting_basis": {"type": "string", "minLength": 1},
+        "report_cutoff_date": {"type": "string", "format": "date"},
+        "main_analysis_period": {"type": "string", "minLength": 1},
+        "skill_version": {"const": "2.1.2"}
+      }
+    },
+    "disclosures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "file_or_url", "disclosure_type", "publication_date", "reporting_period", "location", "currency", "unit", "extraction_method"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "file_or_url": {"type": "string", "minLength": 1},
+          "disclosure_type": {"type": "string", "minLength": 1},
+          "publication_date": {"type": "string", "format": "date"},
+          "reporting_period": {"type": "string", "minLength": 1},
+          "location": {"type": "string", "minLength": 1},
+          "currency": {"type": "string", "minLength": 1},
+          "unit": {"type": "string", "minLength": 1},
+          "extraction_method": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric_id", "name", "value", "classification", "formula", "scope", "period", "currency", "unit", "source_chain"],
+        "properties": {
+          "metric_id": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "value": {"type": ["number", "string", "null"]},
+          "classification": {"enum": ["statutory", "non_gaap", "calculated", "proxy"]},
+          "formula": {"type": "string"},
+          "scope": {"type": "string", "minLength": 1},
+          "period": {"type": "string", "minLength": 1},
+          "currency": {"type": "string", "minLength": 1},
+          "unit": {"type": "string", "minLength": 1},
+          "source_chain": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "calculations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["calculation_id", "input_metric_ids", "formula", "output_metric_id", "tolerance", "residual_difference"],
+        "properties": {
+          "calculation_id": {"type": "string", "minLength": 1},
+          "input_metric_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "formula": {"type": "string", "minLength": 1},
+          "output_metric_id": {"type": "string", "minLength": 1},
+          "tolerance": {"type": "number", "minimum": 0},
+          "residual_difference": {"type": "number"}
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "text", "level", "placement", "evidence_ids", "dependent_metric_ids", "allowed_wording_strength"],
+        "properties": {
+          "claim_id": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1},
+          "level": {"enum": ["disclosed_fact", "calculation", "supported_inference", "hypothesis"]},
+          "placement": {"enum": ["summary", "core", "body", "issue"]},
+          "evidence_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "dependent_metric_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "allowed_wording_strength": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/decisionItem"}},
+    "scenarios": {"type": "array", "items": {"$ref": "#/$defs/scenario"}},
+    "actions": {"type": "array", "items": {"$ref": "#/$defs/action"}},
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audit_status", "checks", "data_gaps", "red_flags"],
+      "properties": {
+        "audit_status": {"enum": ["pending", "pass", "fail"]},
+        "checks": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "data_gaps": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "red_flags": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "decisionItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issue_id", "management_question", "decision_chain"],
+      "properties": {
+        "issue_id": {"type": "string", "minLength": 1},
+        "management_question": {"type": "string", "minLength": 1},
+        "decision_chain": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_id", "name", "assumptions", "decision_effect"],
+      "properties": {
+        "scenario_id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "assumptions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "decision_effect": {"type": "string", "minLength": 1}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_id", "priority", "owner_role", "action", "completion_evidence"],
+      "properties": {
+        "action_id": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "owner_role": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "completion_evidence": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

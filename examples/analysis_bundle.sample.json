@@ -1,0 +1,115 @@
+{
+  "run": {
+    "company_name": "示例公司（合成数据）",
+    "mode": "financial_report",
+    "disclosure_regime": "示例交易所披露规则",
+    "accounting_basis": "示例准则口径",
+    "report_cutoff_date": "2026-06-30",
+    "main_analysis_period": "2026H1",
+    "skill_version": "2.1.2"
+  },
+  "disclosures": [
+    {
+      "source_id": "SRC-001",
+      "file_or_url": "fixtures/deidentified-2026H1.pdf",
+      "disclosure_type": "interim_report",
+      "publication_date": "2026-08-01",
+      "reporting_period": "2026H1",
+      "location": "p.10 consolidated cash flow statement",
+      "currency": "CNY",
+      "unit": "million",
+      "extraction_method": "manual_readback"
+    }
+  ],
+  "metrics": [
+    {
+      "metric_id": "M-OCF",
+      "name": "经营活动现金流净额",
+      "value": 120.0,
+      "classification": "statutory",
+      "formula": "disclosed",
+      "scope": "consolidated",
+      "period": "2026H1",
+      "currency": "CNY",
+      "unit": "million",
+      "source_chain": ["SRC-001"]
+    },
+    {
+      "metric_id": "M-NP",
+      "name": "归属母公司净利润",
+      "value": 100.0,
+      "classification": "statutory",
+      "formula": "disclosed",
+      "scope": "attributable_to_parent",
+      "period": "2026H1",
+      "currency": "CNY",
+      "unit": "million",
+      "source_chain": ["SRC-001"]
+    },
+    {
+      "metric_id": "M-CASH-RATIO",
+      "name": "净现比",
+      "value": 1.2,
+      "classification": "calculated",
+      "formula": "M-OCF / M-NP",
+      "scope": "consolidated_attributable_profit_proxy",
+      "period": "2026H1",
+      "currency": "N/A",
+      "unit": "ratio",
+      "source_chain": ["SRC-001"]
+    }
+  ],
+  "calculations": [
+    {
+      "calculation_id": "CAL-001",
+      "input_metric_ids": ["M-OCF", "M-NP"],
+      "formula": "120.0 / 100.0 = 1.2",
+      "output_metric_id": "M-CASH-RATIO",
+      "tolerance": 0.0001,
+      "residual_difference": 0.0
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLM-001",
+      "text": "示例公司本期经营现金流高于归属母公司净利润。",
+      "level": "calculation",
+      "placement": "summary",
+      "evidence_ids": ["SRC-001", "M-OCF", "M-NP", "CAL-001"],
+      "dependent_metric_ids": ["M-OCF", "M-NP", "M-CASH-RATIO"],
+      "allowed_wording_strength": "仅描述本期计算结果，不外推趋势"
+    },
+    {
+      "claim_id": "CLM-002",
+      "text": "现金转化是否可持续仍需下一期验证。",
+      "level": "hypothesis",
+      "placement": "issue",
+      "evidence_ids": ["M-CASH-RATIO"],
+      "dependent_metric_ids": ["M-CASH-RATIO"],
+      "allowed_wording_strength": "只能写待验证，不能写已形成趋势"
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "ISS-001",
+      "management_question": "本期现金转化改善来自经营还是收付款时点？",
+      "decision_chain": ["核对营运资金变动", "核对一次性收付款", "下一期复算"]
+    }
+  ],
+  "scenarios": [],
+  "actions": [
+    {
+      "action_id": "ACT-001",
+      "priority": "P1",
+      "owner_role": "分析复核人",
+      "action": "取得下一期官方披露后复算净现比并解释变动。",
+      "completion_evidence": "下一期来源页码、计算表和复核签字"
+    }
+  ],
+  "quality": {
+    "audit_status": "pending",
+    "checks": ["synthetic_fixture_only"],
+    "data_gaps": ["无真实公司数据，不评价业务质量"],
+    "red_flags": []
+  }
+}
